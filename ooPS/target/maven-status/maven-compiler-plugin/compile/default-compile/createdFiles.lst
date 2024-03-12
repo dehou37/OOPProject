@@ -1,0 +1,7 @@
+EventManager.class
+Ticket.class
+TicketOfficer.class
+Customer.class
+Event.class
+User.class
+DBConnection.class

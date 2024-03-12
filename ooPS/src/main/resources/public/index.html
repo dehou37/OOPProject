@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form id="loginForm" action="/login" method="post">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username"><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password"><br><br>
+        <input type="submit" value="Login">
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            
+            var formData = new URLSearchParams(new FormData(this)); // Create a URLSearchParams object from the form
+            var xhr = new XMLHttpRequest(); // Create a new XMLHttpRequest object
+            
+            xhr.open("POST", "/login", true); // Open a POST request to the "/login" endpoint
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // Set the content type header
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Successful login, redirect to user information page
+                        var lastSpace = xhr.responseText.lastIndexOf(" ");
+                        var userID = parseInt(xhr.responseText.substring(lastSpace + 1).trim());
+                        console.log(xhr.responseText);
+                        window.location.href = "/user_info" ;
+                    } else if (xhr.status === 401) {
+                        // Unauthorized, display error message
+                        document.getElementById("message").textContent = xhr.responseText;
+                    } else {
+                        // Other error, display generic message
+                        document.getElementById("message").textContent = "An error occurred. Please try again later.";
+                    }
+                }
+            };
+            
+            xhr.send(formData.toString()); // Send the form data
+        });
+    </script>
+    
+</body>
+</html>
